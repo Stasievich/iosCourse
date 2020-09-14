@@ -209,3 +209,5 @@ var absSignedInt =  abs(signedInt)
 
 var someDouble: Double = 35.67
 var roundSomeDouble = someDouble.rounded()
+var newRound = Double(someDouble * 10).rounded() / 10               // Rounded with 0.1 precision
+
