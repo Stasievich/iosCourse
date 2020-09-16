@@ -165,3 +165,157 @@ class MyClass {
 //: * [App Development with Swift](https://books.apple.com/by/book/app-development-with-swift/id1465002990) **Units 1.1-1.4, 2.1-2.4** - Обязательно + тесты
 //: * Подготовить интерпретацию иерархии видов животных в коде (класс-семейство-вид) подробно описать их свойства и функции
 //: *
+/*
+ 
+ Here I'll try to introduce the basic state hierarchy of middle-ages countries
+ 
+ */
+
+class State {
+    var name: String
+    var nameOfTheRulingDynasty: String
+    var currentRuler: String
+    var religion: String
+    
+    var points: Int = 100
+    
+    init(name: String, nameOfTheRulingDynasty: String, currentRuler: String, religion: String) {
+        self.name = name
+        self.nameOfTheRulingDynasty = nameOfTheRulingDynasty
+        self.currentRuler = currentRuler
+        self.religion = religion
+    }
+    
+    func defineReligion () -> String {
+        switch religion.lowercased() {
+            case "protestant", "reformed", "catholicism", "orthodox", "coptic" : return "Christianity"
+            case "sunni", "shiite" : return "Islam"
+            default : return "Fetishism"
+        }
+    }
+    
+    func headOfTheState () {
+        print(currentRuler + " " + nameOfTheRulingDynasty)
+    }
+    
+    
+}
+
+class Republic: State {
+    var republicanTradition: Double
+    var numberOfMerchants: Int
+    
+    init(name: String, nameOfTheRulingDynasty: String, currentRuler: String, religion: String, republicanTradition: Double, numberOfMerchants: Int) {
+        self.republicanTradition = republicanTradition
+        self.numberOfMerchants = numberOfMerchants
+        super.init(name: name, nameOfTheRulingDynasty: nameOfTheRulingDynasty, currentRuler: currentRuler, religion: religion)
+    }
+    
+    func isRepublicanDictatorship () -> Bool {
+        if republicanTradition < 20.0 {
+            return true
+        }
+        return false
+    }
+    
+    func isMerchantRepublic () -> Bool {
+        if numberOfMerchants > 2 {
+            return true
+        }
+        return false
+    }
+    
+    func reElect () {
+        republicanTradition -= 10
+        getPoints()
+        
+        if republicanTradition < 0 {
+            republicanTradition = 0
+        }
+    }
+    
+    func getPoints() {
+        super.points += Int.random(in: 12 ... 50)
+    }
+    
+    override func headOfTheState() {
+        print("President " + self.currentRuler + " " + self.nameOfTheRulingDynasty)
+    }
+}
+
+class Monarchy: State {
+    var legitimacy: Double
+    var numberOfVassals: Int
+    var numberOfRoyalMarriages: Int
+    
+    init(name: String, nameOfTheRulingDynasty: String, currentRuler: String, religion: String, legitimacy: Double, numberOfVassals: Int, numberOfRoyalMarriages: Int) {
+        self.legitimacy = legitimacy
+        self.numberOfVassals = numberOfVassals
+        self.numberOfRoyalMarriages = numberOfRoyalMarriages
+        super.init(name: name, nameOfTheRulingDynasty: nameOfTheRulingDynasty, currentRuler: currentRuler, religion: religion)
+    }
+    
+    func royalMarriage () {
+        numberOfRoyalMarriages += 1
+        legitimacy -= 0.5
+        
+        if legitimacy < 0 {
+            legitimacy = 0
+        }
+    }
+    
+    func addVassal (number: Int) {
+        numberOfVassals += number
+        legitimacy += Double(number * 5)
+        
+        if legitimacy > 100 {
+            legitimacy = 100
+        }
+    }
+    
+    override func headOfTheState() {
+        print("King " + self.currentRuler + " " + self.nameOfTheRulingDynasty)
+    }
+}
+
+class AbsoluteMonarchy: Monarchy {
+    var administrativeEfficiency: Double
+    var discipline: Double
+    
+    override init(name: String, nameOfTheRulingDynasty: String, currentRuler: String, religion: String, legitimacy: Double, numberOfVassals: Int, numberOfRoyalMarriages: Int) {
+        self.administrativeEfficiency = 0
+        self.discipline = 0
+        super.init(name: name, nameOfTheRulingDynasty: nameOfTheRulingDynasty, currentRuler: currentRuler, religion: religion, legitimacy: legitimacy, numberOfVassals: numberOfVassals, numberOfRoyalMarriages: numberOfRoyalMarriages)
+    }
+    
+    func harshTreatment() {
+        if super.points >= 50 {
+            super.points -= 50
+            administrativeEfficiency += 0.4
+            discipline += 0.05
+        }
+        else {
+            print("You're run out of points!")
+        }
+    }
+}
+
+
+
+
+
+var florence = Republic(name: "Florence", nameOfTheRulingDynasty: "de Medici", currentRuler: "Vasco", religion: "Protestant", republicanTradition: 18.4, numberOfMerchants: 4)
+florence.isRepublicanDictatorship()
+florence.reElect()
+florence.headOfTheState()
+florence.defineReligion()
+
+var france = Monarchy(name: "France", nameOfTheRulingDynasty: "de Valois", currentRuler: "Louis", religion: "Catholicism", legitimacy: 95.0, numberOfVassals: 6, numberOfRoyalMarriages: 3)
+france.headOfTheState()
+france.royalMarriage()
+france.addVassal(number: 1)
+
+var sweden = AbsoluteMonarchy(name: "Sweden", nameOfTheRulingDynasty: "Pfalz", currentRuler: "Karl XII", religion: "Protestant", legitimacy: 100, numberOfVassals: 0, numberOfRoyalMarriages: 2)
+sweden.harshTreatment()
+sweden.discipline
+sweden.headOfTheState()
